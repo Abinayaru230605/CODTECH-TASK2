@@ -1,0 +1,126 @@
+/* STUDENT MANAGEMENT SYSTEM */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STUDENTS 100
+#define MAX_NAME_LEN 50
+
+typedef struct {
+    int id;
+    char name[MAX_NAME_LEN];
+    float marks;
+    char grade;
+} Student;
+
+Student students[MAX_STUDENTS];
+int student_count = 0;
+
+char calculateGrade(float marks) {
+    if (marks >= 90) return 'A';
+    else if (marks >= 80) return 'B';
+    else if (marks >= 70) return 'C';
+    else if (marks >= 60) return 'D';
+    else return 'F';
+}
+
+void addStudent() {
+    if (student_count >= MAX_STUDENTS) {
+        printf("Student limit reached.\n");
+        return;
+    }
+    
+    Student s;
+    s.id = student_count + 1;
+    printf("Enter student name: ");
+    scanf(" %[^\n]s", s.name);
+    printf("Enter student marks: ");
+    scanf("%f", &s.marks);
+    s.grade = calculateGrade(s.marks);
+    students[student_count++] = s;
+    
+    printf("Student added successfully!\n");
+}
+
+void editStudent() {
+    int id, i;
+    printf("Enter student ID to edit: ");
+    scanf("%d", &id);
+    
+    for (i = 0; i < student_count; i++) {
+        if (students[i].id == id) {
+            printf("Editing student %d - %s\n", students[i].id, students[i].name);
+            printf("Enter new name: ");
+            scanf(" %[^\n]s", students[i].name);
+            printf("Enter new marks: ");
+            scanf("%f", &students[i].marks);
+            students[i].grade = calculateGrade(students[i].marks);
+            printf("Student updated successfully!\n");
+            return;
+        }
+    }
+    printf("Student with ID %d not found.\n", id);
+}
+
+void deleteStudent() {
+    int id, i, j;
+    printf("Enter student ID to delete: ");
+    scanf("%d", &id);
+    
+    for (i = 0; i < student_count; i++) {
+        if (students[i].id == id) {
+            for (j = i; j < student_count - 1; j++) {
+                students[j] = students[j + 1];
+            }
+            student_count--;
+            printf("Student deleted successfully!\n");
+            return;
+        }
+    }
+    printf("Student with ID %d not found.\n", id);
+}
+
+void displayStudents() {
+    int i;
+    printf("ID\tName\t\tMarks\tGrade\n");
+    printf("------------------------------------\n");
+    for (i = 0; i < student_count; i++) {
+        printf("%d\t%s\t\t%.2f\t%c\n", students[i].id, students[i].name, students[i].marks, students[i].grade);
+    }
+}
+
+int main() {
+    int choice;
+    
+    while (1) {
+        printf("\nStudent Management System\n");
+        printf("1. Add Student\n");
+        printf("2. Edit Student\n");
+        printf("3. Delete Student\n");
+        printf("4. Display Students\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        
+        switch (choice) {
+            case 1:
+                addStudent();
+                break;
+            case 2:
+                editStudent();
+                break;
+            case 3:
+                deleteStudent();
+                break;
+            case 4:
+                displayStudents();
+                break;
+            case 5:
+                exit(0);
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+    
+    return 0;
+}
